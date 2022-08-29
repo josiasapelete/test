@@ -1,5 +1,6 @@
 const UserModal=require('../Models/UserModel');
 const bcrypt=require('bcrypt');
+
 //Fonction Pour inscription
 module.exports.registerUser= async(req,res)=>{
     const {email,password,firstname,lastname}=req.body;

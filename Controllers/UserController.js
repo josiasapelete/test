@@ -1,5 +1,6 @@
 const UserModal = require('../Models/UserModel.js');
 const bcrypt=require('bcrypt');
+
 module.exports.getAllUsers= async (req,res)=>{
     const users= await UserModal.find().select('-password');
     res.status(200).json(users);

@@ -4,7 +4,8 @@ const mongoose= require('mongoose');
 const app = express();
 require("dotenv").config();
 const AuthRoute= require('./routers/AuthRoute.js');
-const userRoutes=require('./routers/UserRoutes.js')
+const userRoutes=require('./routers/UserRoutes.js');
+const PostRoute=require('./routers/PostRoute.js')
 const PORT= 5000;
 
 //Middleware
@@ -17,6 +18,8 @@ require('./config/connexion.js');
 //routes
 app.use('/auth',AuthRoute)
 app.use('/user',userRoutes)
+app.use('/post',PostRoute)
+
 
 //Serveur
 app.listen(PORT,()=>{
