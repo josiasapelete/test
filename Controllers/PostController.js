@@ -1,7 +1,7 @@
 const PostModel=require('../Models/postModel.js');
 const mongoose= require('mongoose');
 const ObjectID=require('mongoose').Types.ObjectId;
-
+const UserModal=require('../Models/UserModel.js')
 //Create Post
 module.exports.createPost= async (req,res)=>{
     const newPost=req.body;
@@ -76,6 +76,43 @@ module.exports.likePost= async (req,res)=>{
             await post.updateOne({$pull:{likes:userId}});
             res.status(200).json("Post unliked succussfull")
         }
+    } catch (error) {
+        res.status(500).json(error)
+        
+    }
+}
+
+//Get timelines posts
+
+module.exports.getTimelinePosts= async (req,res)=>{
+    const userId= req.params.id;
+    try {
+        const currentUserPosts= await PostModel.find({userId});
+        const followingPosts= await UserModal.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(userId)
+                }
+            },
+            {
+                $lookup: {
+                    from: "posts",
+                    localField: "following",
+                    foreignField:"userId",
+                    as: "followingPosts"
+                }
+            },
+            {
+                $project: {
+                    followingPosts:1,
+                    _id:0
+                }
+            }
+        ])
+        res.status(200).json(currentUserPosts.concat(...followingPosts[0].followingPosts))
+        .sort((a,b)=>{
+            return b.createdAt - a.createdAt;
+        });
     } catch (error) {
         res.status(500).json(error)
         
